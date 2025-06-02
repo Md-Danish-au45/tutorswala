@@ -4,6 +4,16 @@ import { Button } from "@/components/ui/button"
 import { BookOpen, Calendar, CheckCircle, Clock, GraduationCap, MessageSquare, Star, Users } from "lucide-react"
 import ContactWidget from "@/components/contact-widget"
 import landingpage from '../public/landingpage.png'
+import Ajay from "../public/Ajaypal.jpg"
+import Amrdinder from "../public/AmrinderSingh.jpg"
+import Deepak from "../public/DeepakTiwari.jpg"
+import Priya from "../public/priyapatel.jpg"
+import Sanjeev from "../public/sanjeevkumar.jpg"
+import Vijay from "../public/VijaySingh.jpg"
+import parent1 from "../public/parent1.jpeg"
+import parent2 from "../public/parent2.jpeg"
+import parent3 from "../public/parent3.jpeg"
+
 
 export default function Home() {
   return (
@@ -146,156 +156,208 @@ export default function Home() {
 
         {/* How It Works */}
         <section className="w-full py-12 md:py-24 lg:py-28 bg-emerald-50">
-          <div className="container mx-auto px-4 md:px-6 max-w-7xl">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="inline-flex items-center px-3 py-1 mb-2 text-sm font-medium rounded-full bg-emerald-100 text-emerald-700">
-                Simple Process
-              </div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                How <span className="text-emerald-600">Tutorswala</span> Works
-              </h2>
-              <p className="max-w-[800px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Getting started with Tutorswala is easy and straightforward.
-              </p>
-            </div>
-            <div className="mx-auto grid max-w-5xl items-start gap-8 py-12 md:grid-cols-3 md:gap-12">
-              <div className="flex flex-col items-center space-y-4 text-center relative">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg">
-                  <span className="text-xl font-bold">1</span>
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-xl font-bold">Tell Us Your Needs</h3>
-                  <p className="text-muted-foreground">
-                    Share your child's subject requirements, schedule preferences, and learning goals.
-                  </p>
-                </div>
-                <div className="hidden md:block absolute top-8 right-0 w-full h-0.5 bg-emerald-200"></div>
-              </div>
-              <div className="flex flex-col items-center space-y-4 text-center relative">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg">
-                  <span className="text-xl font-bold">2</span>
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-xl font-bold">Match with a Tutor</h3>
-                  <p className="text-muted-foreground">
-                    We'll connect you with tutors who match your requirements and schedule a free consultation.
-                  </p>
-                </div>
-                <div className="hidden md:block absolute top-8 right-0 w-full h-0.5 bg-emerald-200"></div>
-              </div>
-              <div className="flex flex-col items-center space-y-4 text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg">
-                  <span className="text-xl font-bold">3</span>
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-xl font-bold">Start Learning</h3>
-                  <p className="text-muted-foreground">
-                    Begin personalized tutoring sessions online or in-person and track progress along the way.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+  <div className="container mx-auto px-4 md:px-6 max-w-7xl">
+    <div className="flex flex-col items-center justify-center space-y-4 text-center">
+      <div className="inline-flex items-center px-3 py-1 mb-2 text-sm font-medium rounded-full bg-emerald-100 text-emerald-700">
+        Simple Process
+      </div>
+      <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+        How <span className="text-emerald-600">Tutorswala</span> Works
+      </h2>
+      <p className="max-w-[800px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+        Getting started with Tutorswala is easy and straightforward.
+      </p>
+    </div>
+    <div className="mx-auto grid max-w-5xl items-start gap-8 py-12 md:grid-cols-3 md:gap-12">
+      <div className="flex flex-col items-center space-y-4 text-center">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg">
+          <span className="text-xl font-bold">1</span>
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-xl font-bold">Tell Us Your Needs</h3>
+          <p className="text-muted-foreground">
+            Share your child's subject requirements, schedule preferences, and learning goals.
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-col items-center space-y-4 text-center">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg">
+          <span className="text-xl font-bold">2</span>
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-xl font-bold">Match with a Tutor</h3>
+          <p className="text-muted-foreground">
+            We'll connect you with tutors who match your requirements and schedule a free consultation.
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-col items-center space-y-4 text-center">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg">
+          <span className="text-xl font-bold">3</span>
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-xl font-bold">Start Learning</h3>
+          <p className="text-muted-foreground">
+            Begin personalized tutoring sessions online or in-person and track progress along the way.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
         {/* Tutors Section */}
+        {/* Tutors Section */}
         <section id="tutors" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container mx-auto px-4 md:px-6 max-w-7xl">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-emerald-100 px-3 py-1 text-sm text-emerald-700">
-                  Our Team
-                </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Meet Our Expert Tutors</h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Our tutors are passionate educators committed to helping students achieve their full potential.
-                </p>
-              </div>
-            </div>
-            <div className="mx-auto grid max-w-5xl gap-6 py-12 md:grid-cols-2 lg:grid-cols-3">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="flex flex-col items-center space-y-4 rounded-lg border p-4">
-                  <Image
-                    src={`/placeholder.svg?height=200&width=200&text=Tutor+${i}`}
-                    width={100}
-                    height={100}
-                    alt={`Tutor ${i}`}
-                    className="rounded-full object-cover"
-                  />
-                  <div className="space-y-2 text-center">
-                    <h3 className="text-xl font-bold">Tutor Name</h3>
-                    <p className="text-sm text-emerald-600 font-medium">
-                      {["Mathematics", "Science", "English", "History", "Computer Science", "Languages"][i - 1]}{" "}
-                      Specialist
-                    </p>
-                    <div className="flex justify-center">
-                      <div className="flex">
-                        {[...Array(5)].map((_, j) => (
-                          <Star key={j} className="h-4 w-4 fill-current text-yellow-400" />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {Math.floor(Math.random() * 10) + 3} years experience
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-center">
-              <Button className="bg-emerald-600 hover:bg-emerald-700">View All Tutors</Button>
+  <div className="container mx-auto px-4 md:px-6 max-w-7xl">
+    <div className="flex flex-col items-center justify-center space-y-4 text-center">
+      <div className="space-y-2">
+        <div className="inline-block rounded-lg bg-emerald-100 px-3 py-1 text-sm text-emerald-700">
+          Our Team
+        </div>
+        <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Meet Our Expert Tutors</h2>
+        <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+          Our tutors are passionate educators committed to helping students achieve their full potential.
+        </p>
+      </div>
+    </div>
+    <div className="mx-auto grid max-w-5xl gap-6 py-12 md:grid-cols-2 lg:grid-cols-3">
+      {[
+        {
+          id: "1",
+          name: "Ajay Pal",
+          subject: "Mathematics",
+          rating: 5,
+          experience: 10,
+          image: Ajay
+        },
+        {
+          id: "2",
+          name: "Amrinder Singh",
+          subject: "Physics",
+          rating: 4,
+          experience: 7,
+          image: Amrdinder
+        },
+        {
+          id: "3",
+          name: "Deepak Tiwari",
+          subject: "English Literature",
+          rating: 5,
+          experience: 8,
+          image: Deepak
+        },
+        {
+          id: "4",
+          name: "Priya Patel",
+          subject: "Chemistry",
+          rating: 4,
+          experience: 6,
+          image: Priya
+        },
+        {
+          id: "5",
+          name: "Sanjeev Kumar",
+          subject: "Biology",
+          rating: 5,
+          experience: 9,
+          image: Sanjeev
+        },
+        {
+          id: "6",
+          name: "Vijay Singh",
+          subject: "Computer Science",
+          rating: 4,
+          experience: 5,
+          image: Vijay
+        }
+      ].map((tutor) => (
+        <div key={tutor.id} className="flex flex-col items-center space-y-4 rounded-lg border hover:bg-[#eefdf6] p-4 hover:shadow-md transition-shadow">
+          <Image
+            src={tutor.image}
+            width={100}
+            height={100}
+            alt={tutor.name}
+            className="rounded-full object-cover h-24 w-24"
+          />
+          <div className="space-y-2 text-center">
+            <h3 className="text-xl font-bold">{tutor.name}</h3>
+            <p className="text-sm text-emerald-600 font-medium">
+              {tutor.subject} Specialist
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {tutor.experience} years experience
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+    <div className="flex justify-center">
+      <Button className="bg-emerald-600 hover:bg-emerald-700">View All Tutors</Button>
+    </div>
+  </div>
+</section>
+       {/* Testimonials */}
+<section id="testimonials" className="w-full py-12 md:py-24 lg:py-32 bg-emerald-50">
+  <div className="container mx-auto px-4 md:px-6 max-w-7xl">
+    <div className="flex flex-col items-center justify-center space-y-4 text-center">
+      <div className="space-y-2">
+        <div className="inline-block rounded-lg bg-emerald-100 px-3 py-1 text-sm text-emerald-700">
+          Testimonials
+        </div>
+        <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">What Parents Say</h2>
+        <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+          Don't just take our word for it. Here's what parents have to say about Tutorswala.
+        </p>
+      </div>
+    </div>
+    <div className="mx-auto grid max-w-5xl gap-6 py-12 md:grid-cols-2 lg:grid-cols-3">
+      {[
+        {
+          name: "Priya Sharma",
+          grade: 5,
+          quote: "Tutorswala has been a game-changer for my child. Their grades have improved significantly, and they actually look forward to their tutoring sessions now!",
+          image: parent2
+        },
+        {
+          name: "Rahul Kapoor",
+          grade: 8,
+          quote: "The tutors are patient and knowledgeable. My son's confidence in math has grown tremendously since joining Tutorswala.",
+          image: parent1
+        },
+        {
+          name: "Anjali Patel",
+          grade: 3,
+          quote: "Excellent service! The tutors customize lessons perfectly to my child's learning style and needs.",
+          image: parent3
+        }
+      ].map((testimonial, i) => (
+        <div key={i} className="flex flex-col justify-between space-y-4 rounded-xl bg-white p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              {testimonial.quote}
+            </p>
+          </div>
+          <div className="flex items-center space-x-4">
+          <Image
+  src={testimonial.image || `/placeholder.svg?height=40&width=40&text=${testimonial.name.charAt(0)}`}
+  width={40}
+  height={40}
+  alt={testimonial.name}
+  className="rounded-full aspect-square object-cover"
+/>
+            <div>
+              <p className="text-sm font-medium">{testimonial.name}</p>
+              <p className="text-xs text-muted-foreground">
+                Parent of a Grade {testimonial.grade} Student
+              </p>
             </div>
           </div>
-        </section>
-
-        {/* Testimonials */}
-        <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32 bg-emerald-50">
-          <div className="container mx-auto px-4 md:px-6 max-w-7xl">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-emerald-100 px-3 py-1 text-sm text-emerald-700">
-                  Testimonials
-                </div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">What Parents Say</h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Don't just take our word for it. Here's what parents have to say about Tutorswala.
-                </p>
-              </div>
-            </div>
-            <div className="mx-auto grid max-w-5xl gap-6 py-12 md:grid-cols-2 lg:grid-cols-3">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="flex flex-col justify-between space-y-4 rounded-xl bg-white p-6 shadow-sm">
-                  <div className="space-y-2">
-                    <div className="flex">
-                      {[...Array(5)].map((_, j) => (
-                        <Star key={j} className="h-4 w-4 fill-current text-yellow-400" />
-                      ))}
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      "Tutorswala has been a game-changer for my child. Their grades have improved significantly, and
-                      they actually look forward to their tutoring sessions now!"
-                    </p>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <Image
-                      src={`/placeholder.svg?height=40&width=40&text=P${i}`}
-                      width={40}
-                      height={40}
-                      alt="Parent"
-                      className="rounded-full object-cover"
-                    />
-                    <div>
-                      <p className="text-sm font-medium">Parent Name</p>
-                      <p className="text-xs text-muted-foreground">
-                        Parent of a Grade {Math.floor(Math.random() * 12) + 1} Student
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
 
         {/* CTA Section */}
         <section className="w-full py-12 md:py-24 lg:py-28 bg-emerald-600 text-white relative overflow-hidden">
