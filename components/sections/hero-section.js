@@ -5,7 +5,7 @@ import landingpage from '../../public/images/landing/landingpage.png'
 
 export default function HeroSection() {
   return (
-    <section className="w-full py-8 md:py-12 lg:py-16 bg-gradient-to-b from-white to-emerald-50">
+    <section className="w-full pt-24 md:pt-32 lg:pt-40 pb-8 md:pb-12 lg:pb-16 bg-gradient-to-b from-white to-emerald-50">
       <div className="container mx-auto px-4 md:px-6 max-w-7xl">
         <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
           <div className="flex flex-col justify-center space-y-4">
