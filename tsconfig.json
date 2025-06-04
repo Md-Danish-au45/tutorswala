@@ -22,6 +22,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/sections/footer.js", "components/sections/Header.js", "components/common/SectionHeader.jsx", "components/common/TutorCard.jsx", "components/sections/ContactSection.jsx", "components/sections/ctaSection.js", "components/sections/faqSection.js", "components/sections/FeaturesSection.jsx", "components/sections/HeroSection.jsx", "components/sections/howitwroks-Section.js", "components/sections/testimonials-Section.js", "components/sections/TutorsSection.jsx", "types/faq.js", "types/feature.js", "types/testimonial.js", "types/tutor.js", "app/layout.js", "app/page.js", "components/widgets/contact-widget.js"],
   "exclude": ["node_modules"]
 }

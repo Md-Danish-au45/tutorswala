@@ -1,19 +1,19 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Phone, MessageCircle, X, Headphones } from "lucide-react"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Phone, MessageCircle, X, Headphones } from 'lucide-react'
 
 export default function ContactWidget() {
   const [isOpen, setIsOpen] = useState(false)
 
   const handleCall = () => {
-    window.open("tel:+919876543210", "_self")
+    window.open('tel:+919876543210', '_self')
   }
 
   const handleWhatsApp = () => {
-    window.open("https://wa.me/919876543210?text=Hi, I need help with finding a tutor", "_blank")
+    window.open('https://wa.me/919876543210?text=Hi, I need help with finding a tutor', '_blank')
   }
 
   return (
@@ -45,7 +45,11 @@ export default function ContactWidget() {
                 <Phone className="w-4 h-4 mr-2" />
                 Call Us
               </Button>
-              <Button onClick={handleWhatsApp} className="w-full bg-green-500 hover:bg-green-600 text-white" size="sm">
+              <Button
+                onClick={handleWhatsApp}
+                className="w-full bg-green-500 hover:bg-green-600 text-white"
+                size="sm"
+              >
                 <MessageCircle className="w-4 h-4 mr-2" />
                 WhatsApp
               </Button>
