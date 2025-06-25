@@ -1,20 +1,23 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Phone, MessageCircle, X, Headphones } from 'lucide-react'
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Phone, MessageCircle, X, Headphones } from "lucide-react";
 
 export default function ContactWidget() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleCall = () => {
-    window.open('tel:+919876543210', '_self')
-  }
+    window.open("tel:+919810190005", "_self");
+  };
 
   const handleWhatsApp = () => {
-    window.open('https://wa.me/919876543210?text=Hi, I need help with finding a tutor', '_blank')
-  }
+    window.open(
+      "https://wa.me/919810190005?text=Hi, I need help with finding a tutor",
+      "_blank"
+    );
+  };
 
   return (
     <div className="fixed bottom-6 left-6 z-50">
@@ -35,7 +38,9 @@ export default function ContactWidget() {
                 <X className="w-4 h-4" />
               </Button>
             </div>
-            <p className="text-sm text-gray-600 mb-4">Get instant support from our team</p>
+            <p className="text-sm text-gray-600 mb-4">
+              Get instant support from our team
+            </p>
             <div className="space-y-2">
               <Button
                 onClick={handleCall}
@@ -73,5 +78,5 @@ export default function ContactWidget() {
         )}
       </Button>
     </div>
-  )
+  );
 }
