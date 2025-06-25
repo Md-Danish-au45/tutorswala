@@ -1,57 +1,57 @@
-import Ajay from "@/public/images/tutors/Ajaypal.jpg"
-import Amrinder from "@/public/images/tutors/AmrinderSingh.jpg"
-import Deepak from "@/public/images/tutors/DeepakTiwari.jpg"
-import Priya from "@/public/images/tutors/priyapatel.jpg"
-import Sanjeev from "@/public/images/tutors/sanjeevkumar.jpg"
-import Vijay from "@/public/images/tutors/VijaySingh.jpg"
+import Hemlata from "@/public/images/tutors/hemlata.jpg"
+import Subhash from "@/public/images/tutors/Subhash.png"
+import Ratish from "@/public/images/tutors/ratish kr.jpg"
+import Upender from "@/public/images/tutors/upender.jpg"
+import bharti from "@/public/images/tutors/bharti.jpg"
+import swapnil from "@/public/images/tutors/swapnil.png"
 
 export const tutorsData = [
   {
     id: "1",
-    name: "Ajay Pal",
+    name: "Mrs Hemlata",
     subject: "Mathematics",
     rating: 5,
     experience: 10,
-    image: Ajay
+    image: Hemlata
   },
   {
     id: "2",
-    name: "Amrinder Singh",
-    subject: "Physics",
+    name: "Mr Subhash Thakur",
+    subject: "ACCOUNTANCY",
     rating: 4,
-    experience: 7,
-    image: Amrinder
+    experience: 15,
+    image: Subhash
   },
   {
     id: "3",
-    name: "Deepak Tiwari",
-    subject: "English Literature",
+    name: "RATISH KR",
+    subject: "MATHS",
     rating: 5,
     experience: 8,
-    image: Deepak
+    image: Ratish
   },
   {
     id: "4",
-    name: "Priya Patel",
-    subject: "Chemistry",
+    name: " Mr Upender ",
+    subject: "Many subject",
     rating: 4,
     experience: 6,
-    image: Priya
+    image: Upender
   },
   {
     id: "5",
-    name: "Sanjeev Kumar",
-    subject: "Biology",
+    name: "Bhati Kumari",
+    subject: "COMPUTER",
     rating: 5,
     experience: 9,
-    image: Sanjeev
+    image: bharti
   },
   {
     id: "6",
-    name: "Vijay Singh",
-    subject: "Computer Science",
+    name: "Swapnil Gupta ",
+    subject: "PHYSICS",
     rating: 4,
     experience: 5,
-    image: Vijay
+    image: swapnil
   }
 ]
