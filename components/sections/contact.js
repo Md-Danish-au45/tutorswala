@@ -29,7 +29,7 @@ const ContactSection = () => {
     setMessage("");
     setMessageType("");
 
-    const formEndpoint = "http://localhost:5006/api/contact"; // Your backend
+    const formEndpoint = "https://tutorwalabackend.onrender.com/api/contact"; // Your backend
 
     try {
       const response = await fetch(formEndpoint, {

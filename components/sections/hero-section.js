@@ -51,18 +51,21 @@ export default function HeroSection() {
       setIsSubmitting(true);
 
       try {
-        const response = await fetch("http://localhost:5006/api/consultation", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            studentName: formData.name,
-            phoneNumber: formData.phone,
-            classGrade: formData.class,
-            location: formData.location,
-          }),
-        });
+        const response = await fetch(
+          "https://tutorwalabackend.onrender.com/api/consultation",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              studentName: formData.name,
+              phoneNumber: formData.phone,
+              classGrade: formData.class,
+              location: formData.location,
+            }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Submission failed");
