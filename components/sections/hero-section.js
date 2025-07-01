@@ -51,11 +51,22 @@ export default function HeroSection() {
       setIsSubmitting(true);
 
       try {
-        // Simulate API call delay
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const response = await fetch("http://localhost:5006/api/consultation", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            studentName: formData.name,
+            phoneNumber: formData.phone,
+            classGrade: formData.class,
+            location: formData.location,
+          }),
+        });
 
-        // Here you can add your actual API call
-        console.log("Form submitted:", formData);
+        if (!response.ok) {
+          throw new Error("Submission failed");
+        }
 
         // Show success message
         setShowSuccessMessage(true);
@@ -66,19 +77,19 @@ export default function HeroSection() {
           setShowSuccessMessage(false);
           setIsSubmitting(false);
           // Reset form
-          setFormData({ name: "", phone: "", class: "", location: "" }); // Reset location field
+          setFormData({ name: "", phone: "", class: "", location: "" });
         }, 2000);
       } catch (error) {
         console.error("Submission error:", error);
         setIsSubmitting(false);
+        alert("Something went wrong. Please try again later.");
       }
     }
   };
 
+  // Modified handleClose function to always close the popup
   const handleClose = () => {
-    if (isFormValid) {
-      setShowPopup(false);
-    }
+    setShowPopup(false);
   };
 
   return (
@@ -150,12 +161,8 @@ export default function HeroSection() {
             <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white p-6 rounded-t-2xl relative">
               <button
                 onClick={handleClose}
-                disabled={!isFormValid}
-                className={`absolute top-4 right-4 p-1 rounded-full transition-colors ${
-                  isFormValid
-                    ? "hover:bg-white hover:bg-opacity-20 cursor-pointer"
-                    : "opacity-50 cursor-not-allowed"
-                }`}
+                // Removed the 'disabled={!isFormValid}' prop to always enable the close button
+                className="absolute top-4 right-4 p-1 rounded-full transition-colors hover:bg-white hover:bg-opacity-20 cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>

@@ -2,7 +2,7 @@
 
 // Removed 'import Link from "next/link";' as it's not supported in this environment.
 // Using standard 'a' tags for links instead.
-import { MessageSquare, Clock, Users } from "lucide-react";
+import { MessageSquare, Clock, Users, Phone } from "lucide-react"; // Import Phone icon
 import { useState } from "react"; // Import useState for form handling
 
 const ContactSection = () => {
@@ -25,12 +25,11 @@ const ContactSection = () => {
 
   // Handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-    setMessage(""); // Clear previous messages
+    e.preventDefault();
+    setMessage("");
     setMessageType("");
 
-    const formId = "movwpelv"; // Replace with your actual Formspree form ID
-    const formEndpoint = `https://formspree.io/f/${formId}`;
+    const formEndpoint = "http://localhost:5006/api/contact"; // Your backend
 
     try {
       const response = await fetch(formEndpoint, {
@@ -40,11 +39,11 @@ const ContactSection = () => {
         },
         body: JSON.stringify(formData),
       });
+      console.log(response, "data");
 
       if (response.ok) {
         setMessage("Message sent successfully!");
         setMessageType("success");
-        // Optionally clear the form
         setFormData({ name: "", email: "", subject: "", message: "" });
       } else {
         setMessage("Failed to send message. Please try again.");
@@ -100,6 +99,25 @@ const ContactSection = () => {
                 </p>
               </div>
             </div>
+
+            {/* Mobile Number Setup */}
+            <div className="flex items-center space-x-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
+                <Phone className="h-5 w-5 text-emerald-600" />{" "}
+                {/* Phone icon */}
+              </div>
+              <div>
+                <p className="text-sm font-medium">Mobile Number</p>
+                <p className="text-sm text-muted-foreground">
+                  <a href="tel:+918920942943" className="hover:underline">
+                    {" "}
+                    {/* Added tel: link for click-to-call */}
+                    +91 8920942943
+                  </a>
+                </p>
+              </div>
+            </div>
+
             <div className="flex items-center space-x-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
                 <Users className="h-5 w-5 text-emerald-600" />
