@@ -2,15 +2,17 @@ import Link from "next/link";
 import Image from "next/image";
 import ContactWidget from "../widgets/contact-widget";
 import logo from "../../public/images/logo/logo.png";
-import bringmarkLogo from "../../public/images/logo/logo.png"; // Adjust path to your logo
+import bringmarkLogo from "../../public/images/logo/logo.png";
+import { SEO_CATEGORIES, createSlug } from "../../utils/seoData";
 
 const Footer = () => {
   return (
     <div>
-      <footer className="w-full border-t bg-background py-6">
+      <footer className="w-full border-t bg-background py-8">
         <div className="container mx-auto px-4 md:px-6 max-w-7xl">
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            <div className="space-y-4">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
+            {/* Brand Section */}
+            <div className="space-y-4 lg:col-span-1">
               <div className="flex items-center gap-2">
                 <Image
                   src="/images/logo/logod.png"
@@ -19,19 +21,21 @@ const Footer = () => {
                   height={32}
                   className="h-8 w-8"
                 />
-
                 <span className="text-xl font-bold">Tutorswala.com</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Connecting students with expert tutors for academic success.
+                Connecting students with expert tutors for academic success
+                across Delhi NCR.
               </p>
             </div>
+
+            {/* Quick Links */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Quick Links</h3>
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
-                    href="#"
+                    href="/"
                     className="text-muted-foreground hover:text-emerald-600 hover:underline"
                   >
                     Home
@@ -63,12 +67,14 @@ const Footer = () => {
                 </li>
               </ul>
             </div>
+
+            {/* Resources */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Resources</h3>
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
-                    href="#"
+                    href="/blog"
                     className="text-muted-foreground hover:text-emerald-600 hover:underline"
                   >
                     Blog
@@ -76,7 +82,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    href="#"
+                    href="/study-tips"
                     className="text-muted-foreground hover:text-emerald-600 hover:underline"
                   >
                     Study Tips
@@ -84,7 +90,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    href="#"
+                    href="/success-stories"
                     className="text-muted-foreground hover:text-emerald-600 hover:underline"
                   >
                     Success Stories
@@ -92,7 +98,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    href="#"
+                    href="/parent-resources"
                     className="text-muted-foreground hover:text-emerald-600 hover:underline"
                   >
                     Parent Resources
@@ -100,38 +106,125 @@ const Footer = () => {
                 </li>
               </ul>
             </div>
+
+            {/* SEO Links - Delhi Areas */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium">Legal</h3>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link
-                    href="#"
-                    className="text-muted-foreground hover:text-emerald-600 hover:underline"
-                  >
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="text-muted-foreground hover:text-emerald-600 hover:underline"
-                  >
-                    Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="text-muted-foreground hover:text-emerald-600 hover:underline"
-                  >
-                    Cookie Policy
-                  </Link>
-                </li>
+              <h3 className="text-lg font-medium">Delhi Areas</h3>
+              <ul className="space-y-1 text-xs max-h-64 overflow-y-auto">
+                {SEO_CATEGORIES["Delhi Areas"]
+                  .slice(0, 12)
+                  .map((keyword, index) => (
+                    <li key={index}>
+                      <Link
+                        href={`/tuition/${createSlug(keyword)}`}
+                        className="text-muted-foreground hover:text-emerald-600 hover:underline transition-colors duration-200 line-clamp-1"
+                        title={keyword}
+                      >
+                        {keyword.length > 35
+                          ? `${keyword.substring(0, 35)}...`
+                          : keyword}
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+
+            {/* SEO Links - NCR Areas */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">NCR & Nearby</h3>
+              <ul className="space-y-1 text-xs max-h-64 overflow-y-auto">
+                {SEO_CATEGORIES["NCR & Nearby Areas"]
+                  .slice(0, 12)
+                  .map((keyword, index) => (
+                    <li key={index}>
+                      <Link
+                        href={`/tuition/${createSlug(keyword)}`}
+                        className="text-muted-foreground hover:text-emerald-600 hover:underline transition-colors duration-200 line-clamp-1"
+                        title={keyword}
+                      >
+                        {keyword.length > 35
+                          ? `${keyword.substring(0, 35)}...`
+                          : keyword}
+                      </Link>
+                    </li>
+                  ))}
               </ul>
             </div>
           </div>
 
+          {/* Extended SEO Links Section */}
           <div className="mt-8 border-t pt-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="space-y-3">
+                <h4 className="text-sm font-medium text-muted-foreground">
+                  More Delhi Locations
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {SEO_CATEGORIES["Delhi Areas"]
+                    .slice(12)
+                    .map((keyword, index) => (
+                      <Link
+                        key={index}
+                        href={`/tuition/${createSlug(keyword)}`}
+                        className="text-xs px-2 py-1 bg-muted rounded-md hover:bg-emerald-100 hover:text-emerald-700 transition-colors duration-200"
+                        title={keyword}
+                      >
+                        {keyword.split(" ").slice(0, 3).join(" ")}
+                      </Link>
+                    ))}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="text-sm font-medium text-muted-foreground">
+                  More NCR Locations
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {SEO_CATEGORIES["NCR & Nearby Areas"]
+                    .slice(12)
+                    .map((keyword, index) => (
+                      <Link
+                        key={index}
+                        href={`/tuition/${createSlug(keyword)}`}
+                        className="text-xs px-2 py-1 bg-muted rounded-md hover:bg-emerald-100 hover:text-emerald-700 transition-colors duration-200"
+                        title={keyword}
+                      >
+                        {keyword.split(" ").slice(0, 3).join(" ")}
+                      </Link>
+                    ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Legal Links */}
+          <div className="mt-6 pt-4 border-t">
+            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground justify-center mb-4">
+              <Link
+                href="/privacy-policy"
+                className="hover:text-emerald-600 hover:underline"
+              >
+                Privacy Policy
+              </Link>
+              <span>•</span>
+              <Link
+                href="/terms-of-service"
+                className="hover:text-emerald-600 hover:underline"
+              >
+                Terms of Service
+              </Link>
+              <span>•</span>
+              <Link
+                href="/cookie-policy"
+                className="hover:text-emerald-600 hover:underline"
+              >
+                Cookie Policy
+              </Link>
+            </div>
+          </div>
+
+          {/* Footer Bottom */}
+          <div className="border-t pt-6">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 &copy; {new Date().getFullYear()} Tutorswala.com. All rights
@@ -157,7 +250,7 @@ const Footer = () => {
                   <Image
                     src={bringmarkLogo}
                     alt="Bringmark Logo"
-                    width={90} // Adjust to your logo's aspect ratio
+                    width={90}
                     height={90}
                     className="h-5 w-auto rounded-full"
                   />
