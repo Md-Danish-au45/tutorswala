@@ -275,7 +275,7 @@ export default function GetStudents() {
 
             {/* Controls */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <div className="relative">
+              {/* <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-5 w-5" />
                 <input
                   type="text"
@@ -284,9 +284,9 @@ export default function GetStudents() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 w-full sm:w-64 transition-colors"
                 />
-              </div>
+              </div> */}
 
-              <div className="flex gap-2">
+              {/* <div className="flex gap-2">
                 <button
                   onClick={() => setViewMode("card")}
                   className={`p-2.5 rounded-xl transition-colors ${
@@ -307,7 +307,7 @@ export default function GetStudents() {
                 >
                   <List className="h-5 w-5" />
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

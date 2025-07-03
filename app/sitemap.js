@@ -1,4 +1,9 @@
 // app/sitemap.js
+
+// IMPORTANT: For `output: "export"`, you MUST configure this for static generation.
+// This ensures the sitemap is built at compile time.
+export const dynamic = "force-static"; // <--- Add this line
+
 import { SEO_KEYWORDS, createSlug } from "../utils/seoData";
 
 export default function sitemap() {

@@ -1,3 +1,5 @@
+export const dynamic = "force-static";
+
 import GetStudents from "../../components/sections/GetStudents";
 
 export default function StudentsPage() {

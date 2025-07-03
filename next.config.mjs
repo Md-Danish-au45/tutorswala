@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export", // 🚨 For static export
+  output: "export", // ✅ Static export mode for `next export`
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -8,25 +8,16 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true, // Required for export if using <Image>
+    unoptimized: true, // ✅ Required for static export if using <Image>
   },
   async headers() {
     return [
       {
-        source: "/(.*)", // Apply to all routes
+        source: "/(.*)", // ✅ Apply headers to all routes
         headers: [
-          {
-            key: "X-Frame-Options",
-            value: "DENY",
-          },
-          {
-            key: "X-Content-Type-Options",
-            value: "nosniff",
-          },
-          {
-            key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
-          },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {
             key: "Permissions-Policy",
             value: "geolocation=(), microphone=(), camera=()",

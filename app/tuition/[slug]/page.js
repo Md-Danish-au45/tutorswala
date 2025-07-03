@@ -11,7 +11,7 @@ import {
 } from "../../../utils/seoData";
 
 export default function TuitionPage({ params }) {
-  const { slug } = params;
+  const slug = params?.slug;
   const keyword = findKeywordBySlug(slug);
 
   if (!keyword) {
@@ -251,7 +251,7 @@ export default function TuitionPage({ params }) {
 }
 
 export async function generateMetadata({ params }) {
-  const slug = params?.slug;
+  const { slug } = await params; // ✅ Await this destructuring
   const keyword = findKeywordBySlug(slug);
 
   if (!keyword) {
