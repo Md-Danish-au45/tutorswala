@@ -1,18 +1,20 @@
 // app/layout.js
-import "./globals.css";
 import { Inter } from "next/font/google";
-
-export const metadata = {
-  title: "Tutorswala - Quality Tutoring",
-  description: "Connecting students with expert tutors",
-};
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
+
+export const metadata = {
+  title: "TutorsWala",
+  description: "Transform your child's learning experience",
+};
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className} suppressHydrationWarning>
+        {children}
+      </body>
     </html>
   );
 }
