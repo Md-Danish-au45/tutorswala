@@ -1,86 +1,107 @@
 // app/tuition/[slug]/page.js
 
 import React from "react";
-import { marked } from "marked";
-// Ensure this path is correct based on your project structure:
-// e.g., if components is directly in 'app', it might be '../../components/sections/BackTopButton'
-// if components is at root, it might be '../../components/sections/BackTopButton'
+import { marked } from "marked"; // For rendering Markdown content
+// Ensure this path is correct based on your project structure.
+// For example, if 'components' is at the root level alongside 'app',
+// then '../../components/sections/BackTopButton' is correct.
 import BackToTopButton from "../../../components/sections/BackTopButton";
 
+// Define your API base URL to centralize it and make it easier to change.
+const API_BASE_URL = "https://tutorwalabackend.onrender.com/api";
+
+/**
+ * generateStaticParams is used with `output: 'export'` to tell Next.js
+ * which dynamic routes should be pre-rendered into static HTML files at build time.
+ * If a slug is not returned here, that page will result in a 404 in production.
+ */
 export async function generateStaticParams() {
+  console.log(
+    "generateStaticParams: Starting to fetch articles for static generation..."
+  );
   try {
-    const res = await fetch(
-      "https://tutorwalabackend.onrender.com/api/articles/blog",
-      {
-        // Disable revalidate during export since it's SSG
-        next: { revalidate: 3600 }, // ✅
-      }
-    );
+    // Fetch all articles to get their slugs.
+    // 'cache: force-cache' is suitable for `output: 'export'` as data is fetched once at build time.
+    const res = await fetch(`${API_BASE_URL}/articles/blog`, {
+      cache: "force-cache",
+    });
 
     if (!res.ok) {
-      console.error("Failed to fetch articles:", res.status, res.statusText);
-      return [
-        { slug: "example-article" }, // fallback
-      ];
+      // Log detailed error if API call fails. This is crucial for debugging production builds.
+      const errorText = await res.text();
+      console.error(
+        `generateStaticParams: Failed to fetch articles. Status: ${res.status} ${res.statusText}. Response body: ${errorText}`
+      );
+      // Fallback: If API fails, generate at least one fallback page to avoid build errors
+      // and give a hint about the issue. This page will display the error message.
+      return [{ slug: "example-article" }];
     }
 
     const articles = await res.json();
 
     if (!articles || articles.length === 0) {
-      console.warn("No articles returned from API. Falling back.");
+      console.warn(
+        "generateStaticParams: No articles returned from API. Falling back to default slugs."
+      );
+      // Fallback if the API returns an empty array or null.
       return [{ slug: "example-article" }];
     }
 
-    console.log(
-      "Generated Slugs:",
-      articles.map((a) => a.slug)
-    );
-
-    return articles.map((article) => ({
+    // Map the fetched articles to an array of objects, each with a 'slug' property.
+    // This array tells Next.js which HTML files to create.
+    const slugs = articles.map((article) => ({
       slug: article.slug,
     }));
+
+    console.log(
+      "generateStaticParams: Successfully generated slugs for static export:",
+      slugs.map((s) => s.slug)
+    );
+    return slugs;
   } catch (error) {
-    console.error("Error in generateStaticParams:", error);
-    return [{ slug: "example-article" }];
+    // Catch any network errors or other exceptions during the fetch process.
+    console.error(
+      "generateStaticParams: Error during API fetch or processing:",
+      error
+    );
+    return [{ slug: "example-article" }]; // Fallback on any unexpected error
   }
 }
 
-// Function to generate metadata for the page (runs on server for each request or at build time)
+/**
+ * generateMetadata is a Next.js App Router function for defining page metadata (SEO).
+ * It runs at build time for static exports, using the slugs from generateStaticParams.
+ */
 export async function generateMetadata({ params }) {
-  // AWAIT params before destructuring, as params can be a promise
-  const awaitedParams = await params;
-  const { slug } = awaitedParams;
+  // 'params' is a direct object containing the slug, no need to await it.
+  const { slug } = params;
 
-  console.log("Generating metadata for slug:", slug); // Debugging metadata generation
+  console.log("generateMetadata: Generating metadata for slug:", slug); // Debugging metadata generation
 
   try {
-    const res = await fetch(
-      `https://tutorwalabackend.onrender.com/api/articles/blog/${slug}`,
-      {
-        next: { revalidate: 3600 },
-      }
-    );
+    // Fetch the specific article's data for metadata.
+    // 'cache: force-cache' ensures this data is also built at static export time.
+    const res = await fetch(`${API_BASE_URL}/articles/blog/${slug}`, {
+      cache: "force-cache",
+    });
 
     if (!res.ok) {
       console.error(
-        "Failed to fetch article for metadata:",
-        res.status,
-        res.statusText
+        `generateMetadata: Failed to fetch article for metadata. Status: ${res.status} ${res.statusText}. Slug: ${slug}`
       );
       return {
         title: "Page Not Found",
         description: "The requested article could not be found.",
-        // Consider a noindex, nofollow for 404 pages
         robots: {
-          index: false,
+          index: false, // Prevents search engines from indexing pages that return 404
           follow: false,
         },
       };
     }
     const data = await res.json();
 
-    // Log fetched data for metadata to confirm content
-    console.log("Metadata fetched data (excerpt):", {
+    // Log fetched data for metadata to confirm content (useful during build debugging).
+    console.log("generateMetadata: Fetched data (excerpt):", {
       title: data.title,
       metaTitle: data.metaTitle,
       metaDescription: data.metaDescription,
@@ -94,15 +115,17 @@ export async function generateMetadata({ params }) {
         "Read insightful articles on tutoring and education.",
       keywords:
         data.metaKeywords?.join(", ") || "tutoring, education, blog, articles",
-      // IMPORTANT: Replace 'https://yourwebsite.com' with your actual domain
       openGraph: {
         title: data.metaTitle || data.title,
         description: data.metaDescription,
-        url: `https://yourwebsite.com/tuition/${slug}`,
+        // IMPORTANT: Replace 'https://yourwebsite.com' with your actual production domain.
+        // This is critical for Open Graph to work correctly on social media.
+        url: `https://tutorswala.com/tuition/${slug}`, // <<< ENSURE THIS MATCHES YOUR PROD DOMAIN
         type: "article",
         images: [
           {
-            url: data.image || "https://yourwebsite.com/default-blog-image.jpg", // Default image if article has none
+            // Provide a robust default image URL if the article doesn't have one.
+            url: data.image || "https://tutorswala.com/default-blog-image.jpg",
             alt: data.title || "TutorWala Article Image",
           },
         ],
@@ -111,11 +134,11 @@ export async function generateMetadata({ params }) {
         card: "summary_large_image",
         title: data.metaTitle || data.title,
         description: data.metaDescription,
-        image: data.image || "https://yourwebsite.com/default-blog-image.jpg", // Default image if article has none
+        image: data.image || "https://tutorswala.com/default-blog-image.jpg",
       },
     };
   } catch (error) {
-    console.error("Error generating metadata:", error);
+    console.error("generateMetadata: Error generating metadata:", error);
     return {
       title: "Error Loading Page",
       description: "There was an error loading the article details.",
@@ -129,13 +152,12 @@ export async function generateMetadata({ params }) {
 
 // Main Page Component (Server Component)
 const Page = async ({ params }) => {
-  // AWAIT params before destructuring, as params can be a promise
-  const awaitedParams = await params;
-  const { slug } = awaitedParams;
+  // 'params' is a direct object containing the slug, no need to await it.
+  const { slug } = params;
 
-  console.log("Rendering Page for slug:", slug); // Debugging page rendering
+  console.log("Page Component: Attempting to render page for slug:", slug); // Debugging page rendering
 
-  // Example condition: show SEO info in development or if an environment variable is set
+  // Conditional display for SEO info, useful in development
   const showSeoInfo =
     process.env.NODE_ENV === "development" ||
     process.env.NEXT_PUBLIC_SHOW_SEO_PANEL === "true";
@@ -144,34 +166,33 @@ const Page = async ({ params }) => {
   let error = null;
 
   try {
-    const res = await fetch(
-      `https://tutorwalabackend.onrender.com/api/articles/blog/${slug}`,
-      {
-        next: { revalidate: 3600 }, // ✅
-      }
-    );
+    // Fetch the specific article's content for display.
+    // 'cache: force-cache' ensures consistency with other fetches for static export.
+    const res = await fetch(`${API_BASE_URL}/articles/blog/${slug}`, {
+      cache: "force-cache",
+    });
 
     if (!res.ok) {
+      // If the response is not OK (e.g., 404, 500), set an error state.
       error = {
         status: res.status,
         message: `Article with slug "${slug}" not found or an error occurred. Status: ${res.status}`,
       };
       console.error(
-        "API response not OK for main content fetch:",
-        res.status,
-        res.statusText
+        `Page Component: API response not OK for main content fetch. Status: ${res.status} ${res.statusText}. Slug: ${slug}`
       );
     } else {
+      // Parse the JSON response if successful.
       data = await res.json();
-      // Log fetched data for the page component to confirm content
-      console.log("Successfully fetched data for page (excerpt):", {
+      console.log("Page Component: Successfully fetched data (excerpt):", {
         title: data.title,
-        contentLength: data.content?.length, // Log length to check if content is present
+        contentLength: data.content?.length,
         metaTitle: data.metaTitle,
         metaDescription: data.metaDescription,
         image: data.image,
       });
-      // Optionally trim whitespace from content fields from backend
+
+      // Trim whitespace from string fields for cleaner data.
       if (data.title) data.title = data.title.trim();
       if (data.content) data.content = data.content.trim();
       if (data.metaTitle) data.metaTitle = data.metaTitle.trim();
@@ -180,15 +201,18 @@ const Page = async ({ params }) => {
       if (data.category) data.category = data.category.trim();
     }
   } catch (err) {
-    console.error("Error fetching article for page component:", err);
+    // Catch any network errors or other exceptions during the fetch.
+    console.error(
+      "Page Component: Error fetching article for page component:",
+      err
+    );
     error = {
       message: "Failed to load article due to a network or server error.",
     };
   }
 
-  // Handle article not found or errors gracefully
+  // If there's an error or no data, display a user-friendly error page.
   if (error || !data) {
-    // Added !data check just in case fetch succeeds but returns empty
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-xl shadow-lg p-8 max-w-md mx-auto text-center">
@@ -227,12 +251,11 @@ const Page = async ({ params }) => {
     );
   }
 
-  // Calculate estimated read time (example: 200 words per minute)
+  // Calculate estimated read time based on content word count.
   const wordCount = data.content ? data.content.split(/\s+/).length : 0;
-  const readTime = Math.ceil(wordCount / 200);
+  const readTime = Math.ceil(wordCount / 200); // Assuming 200 words per minute
 
-  // Safely render content, converting markdown using marked.parse
-  // If data.content is empty, renderedContent will be ""
+  // Convert Markdown content to HTML using 'marked'.
   const renderedContent = data.content ? marked.parse(data.content) : "";
 
   return (
@@ -245,11 +268,11 @@ const Page = async ({ params }) => {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
           <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-100 text-emerald-800 mb-4">
             <span className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>
-            {/* Display category */}
+            {/* Display article category */}
             {data.category || "Uncategorized"}
           </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
-            {/* Display title */}
+            {/* Display article title */}
             {data.title}
           </h1>
 
@@ -258,7 +281,7 @@ const Page = async ({ params }) => {
             <div className="mb-8 rounded-lg overflow-hidden shadow-md">
               <img
                 src={data.image}
-                alt={data.title || "Article Image"} // Use article title for alt text
+                alt={data.title || "Article Image"} // Use article title for alt text for accessibility
                 className="w-full h-auto max-h-96 object-cover" // Responsive image styles
               />
             </div>
@@ -279,7 +302,7 @@ const Page = async ({ params }) => {
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              Published:{" "}
+              Published: {/* Format date for readability */}
               {new Date(data.createdAt).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
@@ -311,13 +334,12 @@ const Page = async ({ params }) => {
         <article className="bg-white rounded-2xl shadow-lg overflow-hidden">
           {/* Article Content */}
           <div className="px-8 py-12">
-            {/* This is where the main article content (from 'data.content') will be rendered */}
-            {/* It will be empty if data.content is empty or null after marked.parse */}
+            {/* Render the Markdown content as HTML. */}
             <div
               className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-emerald-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm"
               dangerouslySetInnerHTML={{ __html: renderedContent }}
             />
-            {/* Optional: Fallback message if content is truly empty */}
+            {/* Fallback message if content is truly empty (e.g., article was saved without content). */}
             {!renderedContent && (
               <p className="text-gray-500 text-center py-4">
                 No article content available.
@@ -325,7 +347,7 @@ const Page = async ({ params }) => {
             )}
           </div>
 
-          {/* Article Footer */}
+          {/* Article Footer (Tags) */}
           <footer className="bg-gray-50 px-8 py-6 border-t border-gray-200">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center space-x-4">
@@ -366,30 +388,43 @@ const Page = async ({ params }) => {
           </footer>
         </article>
 
-        {/* SEO Information Panel (Conditional Display) */}
+        {/* SEO Information Panel (only shown if showSeoInfo is true, e.g., in development) */}
         {showSeoInfo && (
           <aside className="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Meta Title
+                  </h3>
                   <div
                     id="metaTitle"
                     className="p-3 bg-gray-50 rounded-lg border"
                   >
-                    {/* Display metaTitle */}
                     <p className="text-sm text-gray-800">
                       {data.metaTitle || "Not provided"}
                     </p>
                   </div>
                 </div>
-                <div></div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Image URL
+                  </h3>
+                  <div className="p-3 bg-gray-50 rounded-lg border">
+                    <p className="text-sm text-gray-800 break-all">
+                      {data.image || "Not provided"}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div>
+              <div className="mt-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Meta Description
+                </h3>
                 <div
                   id="metaDescription"
                   className="p-3 bg-gray-50 rounded-lg border"
                 >
-                  {/* Display metaDescription */}
                   <p className="text-sm text-gray-800">
                     {data.metaDescription || "Not provided"}
                   </p>
@@ -414,7 +449,7 @@ const Page = async ({ params }) => {
         )}
       </main>
 
-      {/* Back to Top button */}
+      {/* Back to Top button - Client Component */}
       <BackToTopButton />
     </div>
   );
