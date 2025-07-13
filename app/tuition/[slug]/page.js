@@ -7,33 +7,33 @@ import { marked } from "marked";
 // if components is at root, it might be '../../components/sections/BackTopButton'
 import BackToTopButton from "../../../components/sections/BackTopButton";
 
-// Function to generate static paths for articles (runs at build time)
 export async function generateStaticParams() {
   try {
     const res = await fetch(
       "https://tutorwalabackend.onrender.com/api/articles/blog",
       {
-        // Adding revalidate to ensure fresh data during build if backend updates frequently
-        next: { revalidate: 3600 }, // Revalidate every hour
+        // Disable revalidate during export since it's SSG
+        next: { revalidate: 3600 }, // ✅
       }
     );
 
     if (!res.ok) {
-      console.error(
-        "Failed to fetch articles for generateStaticParams:",
-        res.status,
-        res.statusText
-      );
-      // Return an empty array to prevent build errors, Next.js will then fall back to dynamic rendering
-      return [];
+      console.error("Failed to fetch articles:", res.status, res.statusText);
+      return [
+        { slug: "example-article" }, // fallback
+      ];
     }
 
     const articles = await res.json();
 
-    // Log the slugs to ensure they are correctly generated
+    if (!articles || articles.length === 0) {
+      console.warn("No articles returned from API. Falling back.");
+      return [{ slug: "example-article" }];
+    }
+
     console.log(
       "Generated Slugs:",
-      articles.map((article) => article.slug)
+      articles.map((a) => a.slug)
     );
 
     return articles.map((article) => ({
@@ -41,7 +41,7 @@ export async function generateStaticParams() {
     }));
   } catch (error) {
     console.error("Error in generateStaticParams:", error);
-    return [];
+    return [{ slug: "example-article" }];
   }
 }
 
@@ -57,7 +57,7 @@ export async function generateMetadata({ params }) {
     const res = await fetch(
       `https://tutorwalabackend.onrender.com/api/articles/blog/${slug}`,
       {
-        cache: "no-store", // Always fetch fresh data for metadata, or use revalidate if content changes rarely
+        next: { revalidate: 3600 },
       }
     );
 
@@ -147,7 +147,7 @@ const Page = async ({ params }) => {
     const res = await fetch(
       `https://tutorwalabackend.onrender.com/api/articles/blog/${slug}`,
       {
-        cache: "no-store", // Ensure fresh data on each request for the main content
+        next: { revalidate: 3600 }, // ✅
       }
     );
 
