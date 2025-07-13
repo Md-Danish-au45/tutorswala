@@ -3,241 +3,135 @@
 import React from "react";
 import { marked } from "marked";
 import BackToTopButton from "../../../components/sections/BackTopButton";
-import { notFound } from "next/navigation";
 
-// THIS IS CRITICAL: Set dynamic rendering for production
+// 🔥 CRITICAL: These settings force dynamic rendering for ANY slug
 export const dynamic = "force-dynamic";
 export const dynamicParams = true;
+export const revalidate = 0;
 
-// Simplified generateStaticParams for production compatibility
-export async function generateStaticParams() {
-  try {
-    const res = await fetch(
-      "https://tutorwalabackend.onrender.com/api/articles/blog",
-      {
-        next: { revalidate: 3600 },
-      }
-    );
+// 🚨 IMPORTANT: Do NOT export generateStaticParams at all
+// This ensures ANY slug works without pre-generation
 
-    let staticParams = [];
-
-    if (res.ok) {
-      const articles = await res.json();
-      if (articles && articles.length > 0) {
-        staticParams = articles.map((article) => ({
-          slug: article.slug,
-        }));
-        console.log(
-          "Generated Slugs from API:",
-          articles.map((a) => a.slug)
-        );
-      }
-    }
-
-    // For production, we'll keep this minimal and handle other routes dynamically
-    return staticParams.length > 0 ? staticParams : [];
-  } catch (error) {
-    console.error("Error in generateStaticParams:", error);
-    return [];
-  }
-}
-
-// Enhanced metadata generation to handle both article and location pages
+// Metadata generation that works for ANY slug
 export async function generateMetadata({ params }) {
-  const awaitedParams = await params;
-  const { slug } = awaitedParams;
+  const { slug } = await params;
 
-  console.log("Generating metadata for slug:", slug);
-
-  // First try to fetch as an article
+  // Try to fetch article data first
+  let articleData = null;
   try {
-    const res = await fetch(
+    const response = await fetch(
       `https://tutorwalabackend.onrender.com/api/articles/blog/${slug}`,
       {
-        next: { revalidate: 3600 },
+        cache: "no-store",
+        next: { revalidate: 0 },
       }
     );
 
-    if (res.ok) {
-      const data = await res.json();
-      console.log("Found article metadata for:", slug);
-
-      return {
-        title: data.metaTitle || data.title || "TutorWala Blog",
-        description:
-          data.metaDescription ||
-          "Read insightful articles on tutoring and education.",
-        keywords:
-          data.metaKeywords?.join(", ") ||
-          "tutoring, education, blog, articles",
-        openGraph: {
-          title: data.metaTitle || data.title,
-          description: data.metaDescription,
-          url: `https://tutorswala.com/tuition/${slug}`,
-          type: "article",
-          images: [
-            {
-              url:
-                data.image || "https://tutorswala.com/default-blog-image.jpg",
-              alt: data.title || "TutorWala Article Image",
-            },
-          ],
-        },
-        twitter: {
-          card: "summary_large_image",
-          title: data.metaTitle || data.title,
-          description: data.metaDescription,
-          image: data.image || "https://tutorswala.com/default-blog-image.jpg",
-        },
-      };
+    if (response.ok) {
+      articleData = await response.json();
     }
   } catch (error) {
-    console.log("Not an article, treating as location page:", slug);
+    console.log("No article found for slug:", slug);
   }
 
-  // If not an article, generate location-based metadata
-  const locationTitle = generateLocationTitle(slug);
-  const locationDescription = generateLocationDescription(slug);
+  // If article exists, use article metadata
+  if (articleData) {
+    return {
+      title: articleData.metaTitle || articleData.title || "TutorWala Blog",
+      description:
+        articleData.metaDescription ||
+        "Read insightful articles on tutoring and education.",
+      keywords:
+        articleData.metaKeywords?.join(", ") || "tutoring, education, blog",
+      openGraph: {
+        title: articleData.metaTitle || articleData.title,
+        description: articleData.metaDescription,
+        url: `https://tutorswala.com/tuition/${slug}`,
+        type: "article",
+        images: [
+          {
+            url:
+              articleData.image ||
+              "https://tutorswala.com/default-blog-image.jpg",
+            alt: articleData.title || "TutorWala Article",
+          },
+        ],
+      },
+    };
+  }
+
+  // Generate location-based metadata for any other slug
+  const cleanLocation = slug
+    .replace(/home-tutoring-|tuition-|tutoring-/g, "")
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (l) => l.toUpperCase());
+
+  const title = `Home Tutoring in ${cleanLocation} | Expert Tutors | TutorsWala`;
+  const description = `Find expert home tutors in ${cleanLocation}. Personalized tutoring services for all subjects. Qualified teachers, flexible scheduling. Book your tutor today!`;
 
   return {
-    title: locationTitle,
-    description: locationDescription,
-    keywords: generateLocationKeywords(slug),
+    title,
+    description,
+    keywords: `home tutoring ${cleanLocation}, tutors ${cleanLocation}, private tutor, education, TutorsWala`,
     openGraph: {
-      title: locationTitle,
-      description: locationDescription,
+      title,
+      description,
       url: `https://tutorswala.com/tuition/${slug}`,
       type: "website",
       images: [
         {
           url: "https://tutorswala.com/images/tutoring-banner.jpg",
-          alt: locationTitle,
+          alt: title,
         },
       ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: locationTitle,
-      description: locationDescription,
-      image: "https://tutorswala.com/images/tutoring-banner.jpg",
     },
   };
 }
 
-// Helper functions for location-based content
-function generateLocationTitle(slug) {
-  const formatted = slug
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (l) => l.toUpperCase());
+// Main page component that handles ANY slug
+async function Page({ params }) {
+  const { slug } = await params;
 
-  if (slug.includes("home-tutoring")) {
-    const location = slug.replace("home-tutoring-", "").replace("-", " ");
-    return `Home Tutoring in ${
-      location.charAt(0).toUpperCase() + location.slice(1)
-    } | TutorsWala`;
-  }
+  console.log("🚀 Rendering page for slug:", slug);
 
-  if (slug.includes("tutor")) {
-    return `${formatted} | Find Expert Tutors | TutorsWala`;
-  }
-
-  return `${formatted} | Premium Tutoring Services | TutorsWala`;
-}
-
-function generateLocationDescription(slug) {
-  if (slug.includes("home-tutoring")) {
-    const location = slug.replace("home-tutoring-", "").replace("-", " ");
-    return `Find expert home tutors in ${
-      location.charAt(0).toUpperCase() + location.slice(1)
-    }. Personalized tutoring services for all subjects and grades. Book your tutor today with TutorsWala!`;
-  }
-
-  if (slug.includes("tutor")) {
-    return `Connect with qualified tutors for personalized learning experiences. Expert tutoring services available for all subjects and academic levels.`;
-  }
-
-  return `Premium tutoring services available in your area. Connect with qualified tutors for personalized learning experiences. Book your session today!`;
-}
-
-function generateLocationKeywords(slug) {
-  const baseKeywords =
-    "tutoring, home tutor, private tutor, education, learning, TutorsWala";
-
-  if (slug.includes("home-tutoring")) {
-    const location = slug.replace("home-tutoring-", "").replace("-", " ");
-    return `${baseKeywords}, ${location} tutor, home tutoring ${location}, tutors in ${location}`;
-  }
-
-  return baseKeywords;
-}
-
-// Enhanced page component to handle both articles and location pages
-const Page = async ({ params }) => {
-  const awaitedParams = await params;
-  const { slug } = awaitedParams;
-
-  console.log("Rendering Page for slug:", slug);
-
-  const showSeoInfo =
-    process.env.NODE_ENV === "development" ||
-    process.env.NEXT_PUBLIC_SHOW_SEO_PANEL === "true";
-
-  let data = null;
+  let articleData = null;
   let isArticle = false;
-  let error = null;
 
-  // First, try to fetch as an article
+  // Try to fetch article data
   try {
-    console.log("Trying to fetch article for slug:", slug);
-    const res = await fetch(
+    console.log("🔍 Checking if slug is an article:", slug);
+    const response = await fetch(
       `https://tutorwalabackend.onrender.com/api/articles/blog/${slug}`,
       {
-        next: { revalidate: 3600 },
-        headers: {
-          "Cache-Control": "no-cache",
-        },
+        cache: "no-store",
+        next: { revalidate: 0 },
       }
     );
 
-    console.log("Article fetch response status:", res.status);
-
-    if (res.ok) {
-      data = await res.json();
+    if (response.ok) {
+      articleData = await response.json();
       isArticle = true;
-      console.log("Successfully fetched article data for:", slug);
-
-      // Clean up data
-      if (data.title) data.title = data.title.trim();
-      if (data.content) data.content = data.content.trim();
-      if (data.metaTitle) data.metaTitle = data.metaTitle.trim();
-      if (data.metaDescription)
-        data.metaDescription = data.metaDescription.trim();
-      if (data.category) data.category = data.category.trim();
+      console.log("✅ Found article for slug:", slug);
     } else {
-      console.log("No article found, will render as location page:", slug);
+      console.log("❌ No article found, treating as location page:", slug);
     }
-  } catch (err) {
-    console.log(
-      "Article fetch failed, treating as location page:",
-      slug,
-      err.message
-    );
+  } catch (error) {
+    console.log("🔄 API call failed, treating as location page:", slug);
   }
 
-  // If no article found, render as location page
-  if (!isArticle) {
-    console.log("Rendering location page for:", slug);
-    return renderLocationPage(slug, showSeoInfo);
+  // Render article page if article data exists
+  if (isArticle && articleData) {
+    return renderArticlePage(articleData);
   }
 
-  // Original article rendering logic
-  if (!data) {
-    console.log("No data found, rendering error page");
-    return renderErrorPage();
-  }
+  // Otherwise render location page
+  return renderLocationPage(slug);
+}
 
+// Function to render article page
+function renderArticlePage(data) {
   const wordCount = data.content ? data.content.split(/\s+/).length : 0;
-  const readTime = Math.ceil(wordCount / 200);
+  const readTime = Math.ceil(wordCount / 200) || 1;
   const renderedContent = data.content ? marked.parse(data.content) : "";
 
   return (
@@ -245,12 +139,11 @@ const Page = async ({ params }) => {
       className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 font-sans text-gray-800"
       id="top"
     >
-      {/* Header Section */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
           <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-100 text-emerald-800 mb-4">
             <span className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>
-            {data.category || "Uncategorized"}
+            {data.category || "Blog Article"}
           </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
             {data.title}
@@ -282,11 +175,14 @@ const Page = async ({ params }) => {
                 />
               </svg>
               Published:{" "}
-              {new Date(data.createdAt).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
+              {new Date(data.createdAt || new Date()).toLocaleDateString(
+                "en-US",
+                {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }
+              )}
             </div>
             <div className="flex items-center">
               <svg
@@ -308,22 +204,21 @@ const Page = async ({ params }) => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <article className="bg-white rounded-2xl shadow-lg overflow-hidden">
           <div className="px-8 py-12">
-            <div
-              className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-emerald-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm"
-              dangerouslySetInnerHTML={{ __html: renderedContent }}
-            />
-            {!renderedContent && (
-              <p className="text-gray-500 text-center py-4">
-                No article content available.
-              </p>
+            {renderedContent ? (
+              <div
+                className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed prose-a:text-emerald-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900"
+                dangerouslySetInnerHTML={{ __html: renderedContent }}
+              />
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-500">Article content is loading...</p>
+              </div>
             )}
           </div>
 
-          {/* Article Footer */}
           <footer className="bg-gray-50 px-8 py-6 border-t border-gray-200">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center space-x-4">
@@ -355,7 +250,7 @@ const Page = async ({ params }) => {
                     ))
                   ) : (
                     <span className="text-sm text-gray-500">
-                      No tags available
+                      Education, Tutoring
                     </span>
                   )}
                 </div>
@@ -363,62 +258,24 @@ const Page = async ({ params }) => {
             </div>
           </footer>
         </article>
-
-        {/* SEO Information Panel */}
-        {showSeoInfo && (
-          <aside className="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="p-6 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <div
-                    id="metaTitle"
-                    className="p-3 bg-gray-50 rounded-lg border"
-                  >
-                    <p className="text-sm text-gray-800">
-                      {data.metaTitle || "Not provided"}
-                    </p>
-                  </div>
-                </div>
-                <div></div>
-              </div>
-              <div>
-                <div
-                  id="metaDescription"
-                  className="p-3 bg-gray-50 rounded-lg border"
-                >
-                  <p className="text-sm text-gray-800">
-                    {data.metaDescription || "Not provided"}
-                  </p>
-                </div>
-              </div>
-              <div className="pt-4 border-t border-gray-200">
-                <div className="flex items-center justify-between text-xs text-gray-500">
-                  <span>
-                    Last updated:{" "}
-                    {new Date(
-                      data.updatedAt || data.createdAt || Date.now()
-                    ).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </aside>
-        )}
       </main>
 
       <BackToTopButton />
     </div>
   );
-};
+}
 
-// Function to render location-based page with enhanced content
-function renderLocationPage(slug, showSeoInfo) {
-  const locationTitle = generateLocationTitle(slug);
-  const locationContent = generateLocationContent(slug);
+// Function to render location page for ANY slug
+function renderLocationPage(slug) {
+  console.log("🏠 Rendering location page for:", slug);
+
+  // Extract location from slug
+  const cleanLocation = slug
+    .replace(/home-tutoring-|tuition-|tutoring-/g, "")
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (l) => l.toUpperCase());
+
+  const displayLocation = cleanLocation || "Your Area";
 
   return (
     <div
@@ -429,23 +286,45 @@ function renderLocationPage(slug, showSeoInfo) {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
           <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-100 text-emerald-800 mb-4">
             <span className="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span>
-            Tutoring Services
+            Delhi Areas
           </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
-            {locationTitle.replace(" | TutorsWala", "")}
+            Home Tutoring in {displayLocation}
           </h1>
 
-          {/* Add hero image for location pages */}
+          {/* Hero Banner */}
           <div className="mb-8 rounded-lg overflow-hidden shadow-md">
-            <div className="w-full h-96 bg-gradient-to-r from-yellow-200 via-yellow-300 to-yellow-400 flex items-center justify-center">
-              <div className="text-center">
-                <div className="text-6xl mb-4">📚</div>
-                <p className="text-2xl font-bold text-gray-800">
-                  Get top-notch tutoring
-                </p>
-                <p className="text-xl text-gray-700">
-                  with our experienced teachers
-                </p>
+            <div className="w-full h-96 bg-gradient-to-r from-yellow-200 via-yellow-300 to-yellow-400 flex items-center justify-center relative">
+              <div className="flex items-center justify-between w-full max-w-4xl px-8">
+                <div className="flex-1">
+                  <div className="text-left">
+                    <h2 className="text-4xl font-bold text-gray-800 mb-2">
+                      Get top-notch
+                    </h2>
+                    <h2 className="text-4xl font-bold text-gray-800 mb-2">
+                      Math tutoring
+                    </h2>
+                    <h2 className="text-4xl font-bold text-gray-800 mb-2">
+                      with our
+                    </h2>
+                    <h2 className="text-4xl font-bold text-gray-800">
+                      experienced
+                    </h2>
+                    <h2 className="text-4xl font-bold text-gray-800">
+                      teachers.
+                    </h2>
+                  </div>
+                </div>
+                <div className="flex-1 flex justify-center items-center">
+                  <div className="text-center">
+                    <div className="w-48 h-48 bg-green-600 rounded-lg flex items-center justify-center mb-4 relative">
+                      <div className="text-white text-6xl">👩‍🏫</div>
+                      <div className="absolute bottom-4 left-4 bg-teal-500 text-white px-3 py-1 rounded text-sm font-bold">
+                        MATH
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -462,16 +341,15 @@ function renderLocationPage(slug, showSeoInfo) {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              Available in your area
+              Published:{" "}
+              {new Date().toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
             </div>
             <div className="flex items-center">
               <svg
@@ -497,17 +375,129 @@ function renderLocationPage(slug, showSeoInfo) {
         <article className="bg-white rounded-2xl shadow-lg overflow-hidden">
           <div className="px-8 py-12">
             <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-headings:font-bold prose-p:text-gray-700 prose-p:leading-relaxed">
-              {locationContent}
+              <h2>Premium Home Tutoring Services in {displayLocation}</h2>
+              <p>
+                Looking for qualified home tutors in {displayLocation}?
+                TutorsWala connects you with experienced, verified tutors who
+                provide personalized education right at your doorstep. Our
+                platform makes it easy to find the perfect tutor for your
+                academic needs.
+              </p>
+
+              <h3>Why Choose Our Home Tutoring in {displayLocation}?</h3>
+              <ul>
+                <li>
+                  <strong>Qualified Tutors:</strong> All our tutors are
+                  thoroughly vetted and experienced professionals
+                </li>
+                <li>
+                  <strong>Personalized Learning:</strong> One-on-one attention
+                  tailored to your specific learning style
+                </li>
+                <li>
+                  <strong>Convenient Scheduling:</strong> Flexible timings that
+                  fit perfectly with your busy schedule
+                </li>
+                <li>
+                  <strong>All Subjects:</strong> Mathematics, Science, English,
+                  Social Studies, and much more
+                </li>
+                <li>
+                  <strong>Competitive Pricing:</strong> Affordable rates with
+                  completely transparent pricing
+                </li>
+                <li>
+                  <strong>Local Presence:</strong> Tutors available right in{" "}
+                  {displayLocation} area
+                </li>
+              </ul>
+
+              <h3>Subjects We Cover in {displayLocation}</h3>
+              <p>
+                Our expert tutors in {displayLocation} provide comprehensive
+                tutoring across all academic levels and subjects:
+              </p>
+              <ul>
+                <li>
+                  <strong>Mathematics:</strong> From elementary arithmetic to
+                  advanced calculus
+                </li>
+                <li>
+                  <strong>Sciences:</strong> Physics, Chemistry, Biology, and
+                  Environmental Science
+                </li>
+                <li>
+                  <strong>Languages:</strong> English, Hindi, and regional
+                  languages
+                </li>
+                <li>
+                  <strong>Social Studies:</strong> History, Geography, Civics,
+                  and Economics
+                </li>
+                <li>
+                  <strong>Computer Science:</strong> Programming, Web
+                  Development, and Digital Literacy
+                </li>
+                <li>
+                  <strong>Exam Preparation:</strong> Board Exams, Entrance
+                  Tests, and Competitive Exams
+                </li>
+              </ul>
+
+              <h3>How Our {displayLocation} Tutoring Process Works</h3>
+              <ol>
+                <li>
+                  <strong>Share Your Requirements:</strong> Tell us about your
+                  subject, grade level, and schedule preferences
+                </li>
+                <li>
+                  <strong>Get Matched:</strong> We'll connect you with the most
+                  suitable tutor in {displayLocation}
+                </li>
+                <li>
+                  <strong>Start Learning:</strong> Begin your personalized
+                  tutoring sessions from the comfort of your home
+                </li>
+                <li>
+                  <strong>Track Progress:</strong> Monitor improvement with
+                  regular assessments and detailed feedback
+                </li>
+              </ol>
+
+              <h3>Benefits of Home Tutoring in {displayLocation}</h3>
+              <p>
+                Home tutoring in {displayLocation} offers numerous advantages
+                for students of all ages:
+              </p>
+              <ul>
+                <li>Comfortable learning environment at home</li>
+                <li>No travel time or transportation concerns</li>
+                <li>Individual attention and customized lesson plans</li>
+                <li>Flexible scheduling around your existing commitments</li>
+                <li>Better parent involvement in the learning process</li>
+                <li>Cost-effective compared to coaching institutes</li>
+              </ul>
+
+              <h3>
+                Ready to Start Your Learning Journey in {displayLocation}?
+              </h3>
+              <p>
+                Don't wait any longer to give your child the educational support
+                they deserve. Contact TutorsWala today to find the perfect tutor
+                for your needs in {displayLocation}. We're committed to helping
+                students achieve academic excellence through personalized,
+                professional tutoring services delivered right to your doorstep.
+              </p>
             </div>
 
-            {/* Call to Action Section */}
+            {/* Call to Action */}
             <div className="mt-12 p-8 bg-gradient-to-r from-emerald-50 to-blue-50 rounded-xl border border-emerald-200">
               <div className="text-center">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">
                   Ready to Get Started?
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  Connect with expert tutors in your area today!
+                  Connect with expert tutors in {displayLocation} today!
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <a
@@ -530,167 +520,6 @@ function renderLocationPage(slug, showSeoInfo) {
       </main>
 
       <BackToTopButton />
-    </div>
-  );
-}
-
-// Function to render error page
-function renderErrorPage() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-lg p-8 max-w-md mx-auto text-center">
-        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg
-            className="w-8 h-8 text-red-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-            />
-          </svg>
-        </div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          Content Not Available
-        </h2>
-        <p className="text-gray-600">
-          The requested content could not be loaded.
-        </p>
-        <a
-          href="/"
-          className="mt-6 inline-block bg-blue-600 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-700 transition-colors duration-200"
-        >
-          Go to Homepage
-        </a>
-      </div>
-    </div>
-  );
-}
-
-// Function to generate location-specific content
-function generateLocationContent(slug) {
-  if (slug.includes("home-tutoring")) {
-    const location = slug
-      .replace("home-tutoring-", "")
-      .replace("-", " ")
-      .replace(/\b\w/g, (l) => l.toUpperCase());
-
-    return (
-      <div>
-        <h2>Premium Home Tutoring Services in {location}</h2>
-        <p>
-          Looking for qualified home tutors in {location}? TutorsWala connects
-          you with experienced, verified tutors who provide personalized
-          education right at your doorstep.
-        </p>
-
-        <h3>Why Choose Our Home Tutoring in {location}?</h3>
-        <ul>
-          <li>
-            <strong>Qualified Tutors:</strong> All our tutors are thoroughly
-            vetted and experienced
-          </li>
-          <li>
-            <strong>Personalized Learning:</strong> One-on-one attention
-            tailored to your learning style
-          </li>
-          <li>
-            <strong>Convenient Scheduling:</strong> Flexible timings that fit
-            your schedule
-          </li>
-          <li>
-            <strong>All Subjects:</strong> Mathematics, Science, English, and
-            more
-          </li>
-          <li>
-            <strong>Competitive Pricing:</strong> Affordable rates with
-            transparent pricing
-          </li>
-        </ul>
-
-        <h3>Subjects We Cover</h3>
-        <p>
-          Our expert tutors in {location} provide comprehensive tutoring across
-          all academic levels:
-        </p>
-        <ul>
-          <li>Mathematics (Elementary to Advanced)</li>
-          <li>Science (Physics, Chemistry, Biology)</li>
-          <li>English Language & Literature</li>
-          <li>Social Studies & History</li>
-          <li>Computer Science & Programming</li>
-          <li>Exam Preparation (Board Exams, Competitive Tests)</li>
-        </ul>
-
-        <h3>How It Works</h3>
-        <ol>
-          <li>
-            <strong>Tell us your needs:</strong> Share your subject, grade
-            level, and schedule preferences
-          </li>
-          <li>
-            <strong>Get matched:</strong> We'll connect you with the perfect
-            tutor for your requirements
-          </li>
-          <li>
-            <strong>Start learning:</strong> Begin your personalized tutoring
-            sessions at home
-          </li>
-          <li>
-            <strong>Track progress:</strong> Monitor improvement with regular
-            assessments and feedback
-          </li>
-        </ol>
-
-        <h3>Book Your Home Tutor Today</h3>
-        <p>
-          Ready to start your learning journey? Contact us today to find the
-          perfect tutor for your needs in {location}. We're committed to helping
-          you achieve academic success!
-        </p>
-      </div>
-    );
-  }
-
-  // Generic content for other types of URLs
-  const formattedSlug = slug
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (l) => l.toUpperCase());
-
-  return (
-    <div>
-      <h2>Quality Tutoring Services - {formattedSlug}</h2>
-      <p>
-        Discover excellent tutoring opportunities with TutorsWala. We provide
-        comprehensive educational support tailored to your specific needs.
-      </p>
-
-      <h3>Our Services Include:</h3>
-      <ul>
-        <li>One-on-one personalized tutoring</li>
-        <li>Group study sessions</li>
-        <li>Online and offline learning options</li>
-        <li>Exam preparation and skill development</li>
-        <li>Academic support across all subjects</li>
-      </ul>
-
-      <h3>Why Choose TutorsWala?</h3>
-      <ul>
-        <li>Experienced and qualified tutors</li>
-        <li>Flexible scheduling options</li>
-        <li>Affordable pricing with no hidden costs</li>
-        <li>Proven track record of student success</li>
-        <li>Continuous progress monitoring</li>
-      </ul>
-
-      <p>
-        Contact us today to learn more about how we can help you achieve your
-        academic goals!
-      </p>
     </div>
   );
 }

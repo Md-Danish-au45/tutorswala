@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Comment out output: "export" for dynamic routes to work in production
-  // output: "export", // ❌ This prevents dynamic routes from working properly
-
+  // ✅ Clean config without experimental warnings
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -13,12 +11,7 @@ const nextConfig = {
     unoptimized: true,
   },
 
-  // Add this for better dynamic route handling
-  experimental: {
-    missingSuspenseWithCSRBailout: false,
-  },
-
-  // Enable dynamic routes in production
+  // ✅ Ensure consistent trailing slash behavior
   trailingSlash: false,
 
   async headers() {
@@ -38,16 +31,6 @@ const nextConfig = {
             value: "max-age=63072000; includeSubDomains; preload",
           },
         ],
-      },
-    ];
-  },
-
-  // Add rewrites for better URL handling
-  async rewrites() {
-    return [
-      {
-        source: "/tuition/:slug*",
-        destination: "/tuition/:slug*",
       },
     ];
   },
