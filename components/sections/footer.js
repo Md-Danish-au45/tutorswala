@@ -1,27 +1,24 @@
-// components/footer.jsx
-"use client"; // Essential for client-side functionality (e.g., hooks, interactive elements)
+"use client";
 
 import Link from "next/link";
 import Image from "next/image";
-// Adjust paths as necessary based on your actual file structure
 import ContactWidget from "../widgets/contact-widget";
-import bringmarkLogo from "../../public/images/logo/logo.png"; // Assuming this is in your public folder
-import useFooterKeywords from "../../hooks/useFooterKeywords"; // This hook likely uses client-side features
+import bringmarkLogo from "../../public/images/logo/logo.png";
+import useFooterKeywords from "../../hooks/useFooterKeywords";
 
 const Footer = () => {
   const { delhiKeywords, ncrKeywords } = useFooterKeywords();
 
-  // Helper function to create URL-friendly slugs
   const createSlug = (text) => {
     return text
       .toString()
-      .normalize("NFD") // Normalize to decompose combined characters
-      .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
-      .toLowerCase() // Convert to lowercase
-      .trim() // Trim whitespace from both ends
-      .replace(/\s+/g, "-") // Replace spaces with hyphens
-      .replace(/[^\w-]+/g, "") // Remove all non-word chars except hyphens
-      .replace(/--+/g, "-"); // Replace multiple hyphens with single
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/[^\w-]+/g, "")
+      .replace(/--+/g, "-");
   };
 
   return (
@@ -32,7 +29,6 @@ const Footer = () => {
             {/* Brand Section */}
             <div className="space-y-4 lg:col-span-1">
               <div className="flex items-center gap-2">
-                {/* Ensure the image source is correct and accessible from the public folder */}
                 <Image
                   src="/images/logo/logod.png"
                   alt="Tutorswala Logo"
