@@ -133,6 +133,8 @@ function renderArticlePage(data) {
   const wordCount = data.content ? data.content.split(/\s+/).length : 0;
   const readTime = Math.ceil(wordCount / 200) || 1;
   const renderedContent = data.content ? marked.parse(data.content) : "";
+  const phoneNumber = "+919953282299"; // Replace with your actual phone number
+  const whatsappMessage = "Hello, I'm interested in your tutoring services!"; // Customize your WhatsApp message
 
   return (
     <div
@@ -258,6 +260,50 @@ function renderArticlePage(data) {
             </div>
           </footer>
         </article>
+
+        {/* WhatsApp and Mobile Number Buttons */}
+        <div className="mt-12 text-center">
+          <p className="text-lg font-semibold text-gray-800 mb-4">
+            Have questions? Get in touch!
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <a
+              href={`https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+                whatsappMessage
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center bg-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-105"
+            >
+              <img
+                src="/whatsapp-icon.png"
+                alt="WhatsApp"
+                className="w-6 h-6 mr-3"
+              />
+              Chat on WhatsApp
+            </a>
+            <a
+              href={`tel:${phoneNumber}`}
+              className="inline-flex items-center justify-center bg-blue-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-105"
+            >
+              <svg
+                className="w-6 h-6 mr-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                ></path>
+              </svg>
+              Call Now {phoneNumber}
+            </a>
+          </div>
+        </div>
       </main>
 
       <BackToTopButton />
@@ -276,6 +322,8 @@ function renderLocationPage(slug) {
     .replace(/\b\w/g, (l) => l.toUpperCase());
 
   const displayLocation = cleanLocation || "Your Area";
+  const phoneNumber = "+919810190005"; // Replace with your actual phone number
+  const whatsappMessage = "Hello, I'm interested in your tutoring services!"; // Customize your WhatsApp message
 
   return (
     <div
@@ -517,6 +565,50 @@ function renderLocationPage(slug) {
             </div>
           </div>
         </article>
+
+        {/* WhatsApp and Mobile Number Buttons */}
+        <div className="mt-12 text-center">
+          <p className="text-lg font-semibold text-gray-800 mb-4">
+            Have questions? Get in touch!
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <a
+              href={`https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+                whatsappMessage
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center bg-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-105"
+            >
+              <img
+                src="/whatsapp-icon.png"
+                alt="WhatsApp"
+                className="w-6 h-6 mr-3"
+              />
+              Chat on WhatsApp
+            </a>
+            <a
+              href={`tel:${phoneNumber}`}
+              className="inline-flex items-center justify-center bg-blue-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-105"
+            >
+              <svg
+                className="w-6 h-6 mr-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                ></path>
+              </svg>
+              Call Now {phoneNumber}
+            </a>
+          </div>
+        </div>
       </main>
 
       <BackToTopButton />
