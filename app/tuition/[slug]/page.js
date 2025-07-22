@@ -133,7 +133,7 @@ function renderArticlePage(data) {
   const wordCount = data.content ? data.content.split(/\s+/).length : 0;
   const readTime = Math.ceil(wordCount / 200) || 1;
   const renderedContent = data.content ? marked.parse(data.content) : "";
-  const phoneNumber = "+919953282299"; // Replace with your actual phone number
+  const phoneNumber = "+919810190005"; // Replace with your actual phone number
   const whatsappMessage = "Hello, I'm interested in your tutoring services!"; // Customize your WhatsApp message
 
   return (
